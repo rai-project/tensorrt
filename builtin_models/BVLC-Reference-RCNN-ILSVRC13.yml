@@ -1,0 +1,54 @@
+name: BVLC-Reference-RCNN-ILSVRC13 # name of your model
+framework:
+  name: TensorRT # framework for the model
+  version: 2.1.2 # framework version contraint
+version: 1.0 # version information in semantic version format
+container: # containers used to perform model prediction
+           # multiple platforms can be specified
+  amd64:
+    gpu: raiproject/carml-tensorrt:amd64-cpu
+    cpu: raiproject/carml-tensorrt:amd64-gpu
+  ppc64le:
+    cpu: raiproject/carml-tensorrt:ppc64le-gpu
+    gpu: raiproject/carml-tensorrt:ppc64le-gpu
+description: >
+  The pure TensorRT instantiation of the R-CNN model for ILSVRC13 detection.
+  This model was made by transplanting the R-CNN SVM classifiers into a fc-rcnn classification layer, provided here as an off-the-shelf TensorRT detector.
+  Try the detection example to see it in action.
+  N.B. For research purposes, make use of the official R-CNN package and not this example.
+  This model was trained by Ross Girshick @rbgirshick
+references: # references to papers / websites / etc.. describing the model
+  - https://github.com/BVLC/caffe/tree/master/models/bvlc_reference_rcnn_ilsvrc13
+  - https://arxiv.org/abs/1311.2524
+  - http://nbviewer.jupyter.org/github/BVLC/caffe/blob/master/examples/detection.ipynb
+# license of the model
+license: unrestricted
+# inputs to the model
+inputs:
+  # first input type for the model
+  - type: image
+    # description of the first input
+    description: the input image
+    parameters: # type parameters
+      dimensions: [3, 227, 227]
+output:
+  # the type of the output
+  type: feature
+  # a description of the output parameter
+  description: the output label
+  parameters:
+    # type parameters
+    features_url: https://raw.githubusercontent.com/rai-project/carml-models/master/data/ilsvrc12/det_synset_words.txt
+    features_checksum: fe0fe33bc8cb071f8ca73073d97973c6
+model: # specifies model graph and weights resources
+  graph_path: https://raw.githubusercontent.com/BVLC/caffe/master/models/bvlc_reference_rcnn_ilsvrc13/deploy.prototxt
+  weights_path: http://dl.caffe.berkeleyvision.org/bvlc_reference_rcnn_ilsvrc13.caffemodel
+  is_archive: false # if set, then the base_url is a url to an archive
+                    # the graph_path and weights_path then denote the
+                    # file names of the graph and weights within the archive
+  graph_checksum: 487294811977b91daa2a5e97651bb85c
+  weights_checksum: 42c1556d2d47a9128c4a90e0a9c5341c
+attributes: # extra network attributes
+  kind: CNN # the kind of neural network (CNN, RNN, ...)
+  training_dataset: ImageNet # dataset used to for training
+  manifest_author: abduld

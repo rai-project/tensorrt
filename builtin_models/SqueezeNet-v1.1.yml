@@ -1,0 +1,53 @@
+
+name: SqueezeNet # name of your model
+framework:
+  name: TensorRT # framework for the model
+  version: 2.1.2 # framework version contraint
+version: 1.1 # version information in semantic version format
+container: # containers used to perform model prediction
+           # multiple platforms can be specified
+  amd64:
+    gpu: raiproject/carml-tensorrt:amd64-cpu
+    cpu: raiproject/carml-tensorrt:amd64-gpu
+  ppc64le:
+    cpu: raiproject/carml-tensorrt:ppc64le-gpu
+    gpu: raiproject/carml-tensorrt:ppc64le-gpu
+description: >
+  SqueezeNet v1.1 has 2.4x less computation than v1.0, without sacrificing accuracy.
+references: # references to papers / websites / etc.. describing the model
+  - https://github.com/DeepScale/SqueezeNet
+  - https://arxiv.org/abs/1602.07360
+  - https://github.com/dividiti/ck-tensorrt/tree/master/package/caffemodel-deepscale-squeezenet-1.1
+  - http://cknowledge.org/repo/web.php?template=cknowledge&&wcid=package:59414348b1bdedb5
+# license of the model
+license: BAIR
+# inputs to the model
+inputs:
+  # first input type for the model
+  - type: image
+    # description of the first input
+    description: the input image
+    parameters: # type parameters
+      dimensions: [3, 227, 227]
+      mean: [128, 128, 128]
+output:
+  # the type of the output
+  type: feature
+  # a description of the output parameter
+  description: the output label
+  parameters:
+    # type parameters
+    features_url: http://data.dmlc.ml/mxnet/models/imagenet/synset.txt
+    features_checksum: 4d234b5833aca44928065a180db3016a
+model: # specifies model graph and weights resources
+  graph_path: https://raw.githubusercontent.com/rai-project/carml-models/master/caffe/squeezenet_v1.1/deploy.prototxt
+  weights_path: https://github.com/DeepScale/SqueezeNet/raw/master/SqueezeNet_v1.1/squeezenet_v1.1.caffemodel
+  is_archive: false # if set, then the base_url is a url to an archive
+                    # the graph_path and weights_path then denote the
+                    # file names of the graph and weights within the archive
+  graph_checksum: 1e67cb171e16a4d66fd331409d2f7b0d
+  weights_checksum: 0357e4e11d173c72a01615888826bc8e
+attributes: # extra network attributes
+  kind: CNN # the kind of neural network (CNN, RNN, ...)
+  training_dataset: ImageNet # dataset used to for training
+  manifest_author: abduld

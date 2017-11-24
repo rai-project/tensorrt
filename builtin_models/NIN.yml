@@ -1,0 +1,52 @@
+name: Network in Network # name of your model
+framework:
+  name: TensorRT # framework for the model
+  version: 2.1.2 # framework version contraint
+version: 1.0 # version information in semantic version format
+container: # containers used to perform model prediction
+           # multiple platforms can be specified
+  amd64:
+    gpu: raiproject/carml-mxnet:amd64-cpu
+    cpu: raiproject/carml-mxnet:amd64-gpu
+  ppc64le:
+    cpu: raiproject/carml-mxnet:ppc64le-gpu
+    gpu: raiproject/carml-mxnet:ppc64le-gpu
+description: >
+  This model is a pretrained model on ILSVRC2012[1] dataset.
+  It is able to achieve 58.8% Top-1 Accuracy and 81.3% Top-5 accuracy on ILSVRC2012-Validation Set.
+references: # references to papers / websites / etc.. describing the model
+  - https://gist.github.com/mavenlin/d802a5849de39225bcc6
+  - https://arxiv.org/abs/1312.4400
+# license of the model
+license: non-commercial
+# inputs to the model
+inputs:
+  # first input type for the model
+  - type: image
+    # description of the first input
+    description: the input image
+    parameters: # type parameters
+      dimensions: [3, 224, 224]
+      mean: [123, 117, 104]
+output:
+  # the type of the output
+  type: feature
+  # a description of the output parameter
+  description: the output label
+  parameters:
+    # type parameters
+    features_url: http://s3.amazonaws.com/store.carml.org/synsets/imagenet/synset.txt
+    features_checksum: 4d234b5833aca44928065a180db3016a
+model: # specifies model graph and weights resources
+  base_url: http://s3.amazonaws.com/store.carml.org/models/caffe/nin
+  graph_path: deploy.prototxt
+  weights_path: nin_imagenet.caffemodel
+  is_archive: false # if set, then the base_url is a url to an archive
+                    # the graph_path and weights_path then denote the
+                    # file names of the graph and weights within the archive
+  graph_checksum: 8c749056e1c3481e118d719a3344e590
+  weights_checksum: b568958c0dcf1d97cbcff4c22b02a2be
+attributes: # extra network attributes
+  kind: CNN # the kind of neural network (CNN, RNN, ...)
+  training_dataset: ImageNet # dataset used to for training
+  manifest_author: abduld
