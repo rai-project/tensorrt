@@ -35,5 +35,7 @@ func assetFS() *assetfs.AssetFS {
 }
 
 func init() {
-	framework.Register(FrameworkManifest, assetFS())
+	if supportedSystem {
+		framework.Register(FrameworkManifest, assetFS())
+	}
 }

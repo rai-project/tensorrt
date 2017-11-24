@@ -64,6 +64,10 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 		return nil, err
 	}
 
+	opts = append(opts,
+		options.OutputNode(p.GetOutputLayerName(DefaultOutputLayerName)),
+	)
+
 	ip := &ImagePredictor{
 		ImagePredictor: common.ImagePredictor{
 			Base: common.Base{
@@ -230,7 +234,7 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 
 // Predict ...
 func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...options.Option) ([]dlframework.Features, error) {
-	if p.TraceLevel() >= tracer.FRAMEWORK_TRACE {
+	if false && p.TraceLevel() >= tracer.FRAMEWORK_TRACE {
 		err := p.predictor.StartProfiling("tensorrt", "predict")
 		if err != nil {
 			log.WithError(err).WithField("framework", "tensorrt").Error("unable to start framework profiling")
@@ -260,7 +264,11 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 		input = append(input, v...)
 	}
 
-	predictions, err := p.predictor.Predict(input)
+	predictions, err := p.predictor.Predict(
+		p.GetInputLayerName(DefaultInputLayerName),
+		p.GetOutputLayerName(DefaultOutputLayerName),
+		input,
+	)
 	if err != nil {
 		return nil, err
 	}
