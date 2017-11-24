@@ -260,7 +260,7 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 		input = append(input, v...)
 	}
 
-	predictions, err := p.predictor.Predict(input, int(p.BatchSize()), int(p.inputDims[0]), int(p.inputDims[1]), int(p.inputDims[2]))
+	predictions, err := p.predictor.Predict(input)
 	if err != nil {
 		return nil, err
 	}
