@@ -18,7 +18,7 @@ server:
   host: localhost
   port: 5001
 schema:
-- name: tensorflow-agent
+- name: tensorrt-agent
   path: .
   commands:
     generate:

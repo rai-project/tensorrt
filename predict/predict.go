@@ -234,7 +234,7 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 
 // Predict ...
 func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...options.Option) ([]dlframework.Features, error) {
-	if false && p.TraceLevel() >= tracer.FRAMEWORK_TRACE {
+	if p.TraceLevel() >= tracer.FRAMEWORK_TRACE {
 		err := p.predictor.StartProfiling("tensorrt", "predict")
 		if err != nil {
 			log.WithError(err).WithField("framework", "tensorrt").Error("unable to start framework profiling")
@@ -249,7 +249,7 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 
 				t, err := ctimer.New(profBuffer)
 				if err != nil {
-					pp.Println(err)
+					log.WithError(err).WithField("json", profBuffer).Error("failed to create ctimer")
 					return
 				}
 				t.Publish(ctx)
