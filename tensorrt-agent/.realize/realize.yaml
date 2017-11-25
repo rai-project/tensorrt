@@ -1,19 +1,9 @@
 settings:
-  files:
-    outputs:
-      status: true
-      name: outputs.log
-    logs:
-      status: true
-      name: logs.log
-    errors:
-      status: true
-      name: errors.log
   legacy:
     force: false
     interval: 100ms
 server:
-  status: true
+  status: false
   open: false
   host: localhost
   port: 5001
@@ -21,26 +11,21 @@ schema:
 - name: tensorrt-agent
   path: .
   commands:
-    generate:
-      status: true
     build:
       status: true
     run: true
-  args:
-  - -l
-  - -d
-  - -v
   watcher:
     preview: true
     paths:
-    - ../
-    - ../../dlframework
-    - ../../grpc
+    - ..
     - ../../go-tensorrt
+    - ../../dlframework
     extensions:
     - go
     ignored_paths:
     - ../.git
+    - ../../go-tensorrt/.git
     - .realize
     - ../vendor
     - ../../dlframework/vendor
+    - ../../dlframework/.git

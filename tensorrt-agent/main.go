@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	cmd "github.com/rai-project/dlframework/framework/cmd/server"
 	"github.com/rai-project/tensorrt"
 	_ "github.com/rai-project/tensorrt/predict"
-	cmd "github.com/rai-project/dlframework/framework/cmd/server"
 	"github.com/rai-project/tracer"
 )
 
