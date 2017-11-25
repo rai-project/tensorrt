@@ -34,7 +34,7 @@ func assetFS() *assetfs.AssetFS {
 	panic("unreachable")
 }
 
-func init() {
+func Register() {
 	if supportedSystem {
 		framework.Register(FrameworkManifest, assetFS())
 	}
