@@ -264,10 +264,16 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 		input = append(input, v...)
 	}
 
+	imageDims, err := p.GetImageDimensions()
+	if err != nil {
+		return nil, err
+	}
+
 	predictions, err := p.predictor.Predict(
 		p.GetInputLayerName(DefaultInputLayerName),
 		p.GetOutputLayerName(DefaultOutputLayerName),
 		input,
+		imageDims,
 	)
 	if err != nil {
 		return nil, err
