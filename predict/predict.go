@@ -79,6 +79,10 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 		},
 	}
 
+	if !ip.Options.UsesGPU() {
+		return nil, errors.New("TensorRT requires the GPU option to be set")
+	}
+
 	if err = ip.download(ctx); err != nil {
 		return nil, err
 	}
@@ -234,6 +238,9 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 
 // Predict ...
 func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...options.Option) ([]dlframework.Features, error) {
+	if !p.Options.UsesGPU() {
+		return nil, errors.New("TensorRT requires the GPU option to be set")
+	}
 	if p.TraceLevel() >= tracer.FRAMEWORK_TRACE {
 		err := p.predictor.StartProfiling("tensorrt", "predict")
 		if err != nil {
