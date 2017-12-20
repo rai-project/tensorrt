@@ -50,5 +50,5 @@ attributes: # extra network attributes
   kind: CNN # the kind of neural network (CNN, RNN, ...)
   training_dataset: ImageNet # dataset used to for training
   manifest_author: abduld
- hidden: true # Message type "caffe.PoolingParameter" has no field named "ceil_mode"
+hidden: true # Message type "caffe.PoolingParameter" has no field named "ceil_mode"
 # https://github.com/BVLC/caffe/pull/3057/files

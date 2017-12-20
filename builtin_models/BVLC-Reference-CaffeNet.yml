@@ -12,7 +12,7 @@ container: # containers used to perform model prediction
     cpu: raiproject/carml-tensorrt:ppc64le-gpu
     gpu: raiproject/carml-tensorrt:ppc64le-gpu
 description: >
-  This model is the result of following the TensorRT ImageNet model training instructions. It is a replication of the model described in the AlexNet publication with some differences.
+  This model is the result of following the Caffe ImageNet model training instructions. It is a replication of the model described in the AlexNet publication with some differences.
   Differences:
   not training with the relighting data-augmentation;
   the order of pooling and normalization layers is switched (in CaffeNet, pooling is done before normalization).
