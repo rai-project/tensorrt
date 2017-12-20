@@ -17,7 +17,7 @@ description: >
   multi-branch architecture that has only a few hyper-parameters to set. This strategy exposes a new dimension, which we call
   “cardinality” (the size of the set of transformations), as an essential factor in addition to the dimensions of depth and width.
 references: # references to papers / websites / etc.. describing the model
-  - https://github.com/soeaver/tensorrt-model/tree/master/cls
+  - https://github.com/soeaver/caffe-model/tree/master/cls
   - https://github.com/facebookresearch/ResNeXt
   - https://github.com/facebookresearch/ResNeXt/blob/master/datasets/README.md
 # license of the model
