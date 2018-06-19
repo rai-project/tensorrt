@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	context "context"
 	"github.com/k0kubun/pp"
 	opentracing "github.com/opentracing/opentracing-go"
 	olog "github.com/opentracing/opentracing-go/log"
@@ -21,7 +22,6 @@ import (
 	"github.com/rai-project/tensorrt"
 	"github.com/rai-project/tracer"
 	"github.com/rai-project/tracer/ctimer"
-	context "golang.org/x/net/context"
 )
 
 // ImagePredictor ...
