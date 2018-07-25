@@ -46,7 +46,7 @@
   name = "github.com/rai-project/config"
 
 [[constraint]]
-  branch = "master"
+  revision = "eb0b9937d67b6bf363b1d177284d6c050e698821"
   name = "github.com/rai-project/dlframework"
 
 [[constraint]]
@@ -54,7 +54,7 @@
   name = "github.com/rai-project/downloadmanager"
 
 [[constraint]]
-  branch = "master"
+  revision = "947303b408247fb3aa4aea6568da56dc6b1e1aef"
   name = "github.com/rai-project/go-tensorrt"
 
 [[constraint]]
@@ -73,6 +73,14 @@
   name = "github.com/sirupsen/logrus"
   version = "1.0.5"
 
+[[override]]
+  branch = "master"
+  name = "github.com/apache/thrift"
+
+[[override]]
+  branch = "master"
+  name = "github.com/VividCortex/robustly"
+
 [prune]
   go-tests = true
-  unused-packages = true
+  
