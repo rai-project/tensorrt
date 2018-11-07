@@ -96,8 +96,14 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 		return nil, err
 	}
 
-  opts = append(opts,
-		options.InputNode(p.GetInputLayerName(DefaultOutputLayerName), p.GetImageDimensions()),
+	imageDims, err := p.GetImageDimensions()
+	pp.Println(imageDims)
+	if err != nil {
+		return nil, err
+	}
+
+	opts = append(opts,
+		options.InputNode(p.GetInputLayerName(DefaultOutputLayerName), imageDims),
 	)
 
 	opts = append(opts,
@@ -244,11 +250,6 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 	}
 	p.features = features
 
-	p.inputDims, err =
-	if err != nil {
-		return err
-	}
-
 	span.LogFields(
 		olog.String("event", "creating predictor"),
 	)
@@ -262,7 +263,7 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 		ctx,
 		options.WithOptions(opts),
 		options.Graph([]byte(p.GetGraphPath())),
-    options.Weights([]byte(p.GetWeightsPath())),
+		options.Weights([]byte(p.GetWeightsPath())),
 	)
 	if err != nil {
 		return err
