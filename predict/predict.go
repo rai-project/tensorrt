@@ -96,6 +96,10 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 		return nil, err
 	}
 
+  opts = append(opts,
+		options.InputNode(p.GetInputLayerName(DefaultOutputLayerName), p.GetImageDimensions()),
+	)
+
 	opts = append(opts,
 		options.OutputNode(p.GetOutputLayerName(DefaultOutputLayerName)),
 	)
@@ -240,10 +244,10 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 	}
 	p.features = features
 
-	// p.inputDims, err = p.GetImageDimensions()
-	// if err != nil {
-	// 	return err
-	// }
+	p.inputDims, err =
+	if err != nil {
+		return err
+	}
 
 	span.LogFields(
 		olog.String("event", "creating predictor"),
@@ -258,7 +262,7 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 		ctx,
 		options.WithOptions(opts),
 		options.Graph([]byte(p.GetGraphPath())),
-		options.Weights([]byte(p.GetWeightsPath())),
+    options.Weights([]byte(p.GetWeightsPath())),
 	)
 	if err != nil {
 		return err
@@ -303,11 +307,6 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 		input = append(input, v...)
 	}
 
-	// 	imageDims, err := p.GetImageDimensions()
-	// 	if err != nil {
-	// 		return err
-	// 	}
-
 	err := p.predictor.Predict(ctx, input)
 	if err != nil {
 		return err
@@ -315,24 +314,6 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 
 	return nil
 }
-
-// 	var output []dlframework.Features
-// 	batchSize := int(p.BatchSize())
-// 	length := len(predictions) / batchSize
-
-// 	for i := 0; i < batchSize; i++ {
-// 		rprobs := make([]*dlframework.Feature, length)
-// 		for j := 0; j < length; j++ {
-// 			rprobs[j] = &dlframework.Feature{
-// 				Index:       int64(j),
-// 				Name:        p.features[j],
-// 				Probability: predictions[i*length+j].Probability,
-// 			}
-// 		}
-// 		output = append(output, rprobs)
-// 	}
-// 	return output, nil
-// }
 
 // ReadPredictedFeatures ...
 func (p *ImagePredictor) ReadPredictedFeatures(ctx context.Context) ([]dlframework.Features, error) {
