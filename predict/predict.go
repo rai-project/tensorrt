@@ -97,10 +97,6 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 	}
 
 	opts = append(opts,
-		options.InputNode(p.GetInputLayerName(DefaultInputLayerName)),
-	)
-
-	opts = append(opts,
 		options.OutputNode(p.GetOutputLayerName(DefaultOutputLayerName)),
 	)
 
@@ -159,7 +155,7 @@ func (p *ImagePredictor) GetPreprocessOptions(ctx context.Context) (common.Prepr
 
 func (p *ImagePredictor) download(ctx context.Context) error {
 	span, ctx := tracer.StartSpanFromContext(ctx,
-		tracer.STEP_TRACE,
+		tracer.APPLICATION_TRACE,
 		"Download",
 		opentracing.Tags{
 			"graph_url":           p.GetGraphUrl(),
@@ -244,10 +240,10 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 	}
 	p.features = features
 
-	p.inputDims, err = p.GetImageDimensions()
-	if err != nil {
-		return err
-	}
+	// p.inputDims, err = p.GetImageDimensions()
+	// if err != nil {
+	// 	return err
+	// }
 
 	span.LogFields(
 		olog.String("event", "creating predictor"),
@@ -259,6 +255,7 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 	}
 
 	pred, err := gotensorrt.New(
+		ctx,
 		options.WithOptions(opts),
 		options.Graph([]byte(p.GetGraphPath())),
 		options.Weights([]byte(p.GetWeightsPath())),
@@ -274,7 +271,7 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 // Predict ...
 func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...options.Option) error {
 	if !p.Options.UsesGPU() {
-		return nil, errors.New("TensorRT requires the GPU option to be set")
+		return errors.New("TensorRT requires the GPU option to be set")
 	}
 	if p.TraceLevel() >= tracer.FRAMEWORK_TRACE {
 		err := p.predictor.StartProfiling("tensorrt", "predict")
@@ -294,7 +291,7 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 					log.WithError(err).WithField("json", profBuffer).Error("failed to create ctimer")
 					return
 				}
-				t.Publish(ctx)
+				t.Publish(ctx, tracer.FRAMEWORK_TRACE)
 
 				p.predictor.DisableProfiling()
 			}()
@@ -306,15 +303,17 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 		input = append(input, v...)
 	}
 
-	imageDims, err := p.GetImageDimensions()
-	if err != nil {
-		return nil, err
-	}
+	// 	imageDims, err := p.GetImageDimensions()
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
 	err := p.predictor.Predict(ctx, input)
 	if err != nil {
-		return nil, err
+		return err
 	}
+
+	return nil
 }
 
 // 	var output []dlframework.Features
@@ -347,7 +346,7 @@ func (p *ImagePredictor) ReadPredictedFeatures(ctx context.Context) ([]dlframewo
 		rprobs := make([]*dlframework.Feature, length)
 		for j := 0; j < length; j++ {
 			rprobs[j] = &dlframework.Feature{
-				Index:       int64(j),
+				Index:       int32(j),
 				Name:        p.features[j],
 				Probability: predictions[i*length+j].Probability,
 			}
