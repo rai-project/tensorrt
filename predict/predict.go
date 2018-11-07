@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	context "context"
+
 	"github.com/k0kubun/pp"
 	opentracing "github.com/opentracing/opentracing-go"
 	olog "github.com/opentracing/opentracing-go/log"
@@ -29,11 +30,14 @@ type ImagePredictor struct {
 	common.ImagePredictor
 	features  []string
 	predictor *gotensorrt.Predictor
-	inputDims []uint32
 }
 
 // New ...
 func New(model dlframework.ModelManifest, opts ...options.Option) (common.Predictor, error) {
+	ctx := context.Background()
+	span, ctx := tracer.StartSpanFromContext(ctx, tracer.APPLICATION_TRACE, "new_predictor")
+	defer span.Finish()
+
 	modelInputs := model.GetInputs()
 	if len(modelInputs) != 1 {
 		return nil, errors.New("number of inputs not supported")
@@ -46,14 +50,11 @@ func New(model dlframework.ModelManifest, opts ...options.Option) (common.Predic
 
 	predictor := new(ImagePredictor)
 
-	return predictor.Load(context.Background(), model, opts...)
+	return predictor.Load(ctx, model, opts...)
 }
 
 // Download ...
 func (p *ImagePredictor) Download(ctx context.Context, model dlframework.ModelManifest, opts ...options.Option) error {
-	span, ctx := tracer.StartSpanFromContext(ctx, tracer.STEP_TRACE, "Download")
-	defer span.Finish()
-
 	framework, err := model.ResolveFramework()
 	if err != nil {
 		return err
@@ -84,8 +85,6 @@ func (p *ImagePredictor) Download(ctx context.Context, model dlframework.ModelMa
 
 // Load ...
 func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManifest, opts ...options.Option) (common.Predictor, error) {
-	span, ctx := tracer.StartSpanFromContext(ctx, tracer.STEP_TRACE, "Load")
-	defer span.Finish()
 
 	framework, err := model.ResolveFramework()
 	if err != nil {
@@ -96,6 +95,10 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 	if err != nil {
 		return nil, err
 	}
+
+	opts = append(opts,
+		options.InputNode(p.GetInputLayerName(DefaultInputLayerName)),
+	)
 
 	opts = append(opts,
 		options.OutputNode(p.GetOutputLayerName(DefaultOutputLayerName)),
@@ -221,8 +224,7 @@ func (p *ImagePredictor) download(ctx context.Context) error {
 }
 
 func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
-	span, ctx := tracer.StartSpanFromContext(ctx, tracer.STEP_TRACE, "LoadPredictor")
-
+	span, ctx := tracer.StartSpanFromContext(ctx, tracer.APPLICATION_TRACE, "load_predictor")
 	defer span.Finish()
 
 	span.LogFields(
@@ -270,7 +272,7 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 }
 
 // Predict ...
-func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...options.Option) ([]dlframework.Features, error) {
+func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...options.Option) error {
 	if !p.Options.UsesGPU() {
 		return nil, errors.New("TensorRT requires the GPU option to be set")
 	}
@@ -309,15 +311,33 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 		return nil, err
 	}
 
-	predictions, err := p.predictor.Predict(
-		p.GetInputLayerName(DefaultInputLayerName),
-		p.GetOutputLayerName(DefaultOutputLayerName),
-		input,
-		imageDims,
-	)
+	err := p.predictor.Predict(ctx, input)
 	if err != nil {
 		return nil, err
 	}
+}
+
+// 	var output []dlframework.Features
+// 	batchSize := int(p.BatchSize())
+// 	length := len(predictions) / batchSize
+
+// 	for i := 0; i < batchSize; i++ {
+// 		rprobs := make([]*dlframework.Feature, length)
+// 		for j := 0; j < length; j++ {
+// 			rprobs[j] = &dlframework.Feature{
+// 				Index:       int64(j),
+// 				Name:        p.features[j],
+// 				Probability: predictions[i*length+j].Probability,
+// 			}
+// 		}
+// 		output = append(output, rprobs)
+// 	}
+// 	return output, nil
+// }
+
+// ReadPredictedFeatures ...
+func (p *ImagePredictor) ReadPredictedFeatures(ctx context.Context) ([]dlframework.Features, error) {
+	predictions := p.predictor.ReadPredictedFeatures(ctx)
 
 	var output []dlframework.Features
 	batchSize := int(p.BatchSize())
