@@ -7,7 +7,6 @@ import (
 
 	context "context"
 
-	"github.com/k0kubun/pp"
 	opentracing "github.com/opentracing/opentracing-go"
 	olog "github.com/opentracing/opentracing-go/log"
 	"github.com/pkg/errors"
@@ -96,20 +95,6 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 		return nil, err
 	}
 
-	imageDims, err := p.GetImageDimensions()
-	pp.Println(imageDims)
-	if err != nil {
-		return nil, err
-	}
-
-	opts = append(opts,
-		options.InputNode(p.GetInputLayerName(DefaultOutputLayerName), imageDims),
-	)
-
-	opts = append(opts,
-		options.OutputNode(p.GetOutputLayerName(DefaultOutputLayerName)),
-	)
-
 	ip := &ImagePredictor{
 		ImagePredictor: common.ImagePredictor{
 			Base: common.Base{
@@ -120,6 +105,16 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 			WorkDir: workDir,
 		},
 	}
+
+	imageDims, err := ip.GetImageDimensions()
+	if err != nil {
+		return nil, err
+	}
+
+	ip.Options.Append(
+		options.InputNode(ip.GetInputLayerName(DefaultOutputLayerName), imageDims),
+		options.OutputNode(ip.GetOutputLayerName(DefaultOutputLayerName)),
+	)
 
 	if !ip.Options.UsesGPU() {
 		return nil, errors.New("TensorRT requires the GPU option to be set")
@@ -287,7 +282,7 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 				p.predictor.EndProfiling()
 				profBuffer, err := p.predictor.ReadProfile()
 				if err != nil {
-					pp.Println(err)
+					log.WithError(err).Error("failed to read profile")
 					return
 				}
 

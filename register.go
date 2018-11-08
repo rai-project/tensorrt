@@ -11,7 +11,7 @@ import (
 // FrameworkManifest ...
 var FrameworkManifest = dlframework.FrameworkManifest{
 	Name:    "TensorRT",
-	Version: "2.1.2",
+	Version: "5.0",
 	Container: map[string]*dlframework.ContainerHardware{
 		"amd64": {
 			Cpu: "raiproject/carml-tensorrt:amd64-cpu",
