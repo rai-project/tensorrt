@@ -1,7 +1,7 @@
 name: VGG16_SOD # name of your model
 framework:
   name: TensorRT # framework for the model
-  version: 2.1.2 # framework version contraint
+  version: 5.0.0 # framework version contraint
 version: 1.0 # version information in semantic version format
 container: # containers used to perform model prediction
            # multiple platforms can be specified

@@ -1,10 +1,10 @@
 name: BVLC-AlexNet # name of your model
 framework:
   name: TensorRT # framework for the model
-  version: 2.1.2 # framework version contraint
+  version: 5.0.0 # framework version contraint
 version: 1.0 # version information in semantic version format
 container: # containers used to perform model prediction
-           # multiple platforms can be specified
+  # multiple platforms can be specified
   amd64:
     gpu: raiproject/carml-tensorrt:amd64-cpu
     cpu: raiproject/carml-tensorrt:amd64-gpu
@@ -49,9 +49,10 @@ output:
 model: # specifies model graph and weights resources
   graph_path: https://raw.githubusercontent.com/BVLC/caffe/master/models/bvlc_alexnet/deploy.prototxt
   weights_path: http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel
-  is_archive: false # if set, then the base_url is a url to an archive
-                    # the graph_path and weights_path then denote the
-                    # file names of the graph and weights within the archive
+  is_archive:
+    false # if set, then the base_url is a url to an archive
+    # the graph_path and weights_path then denote the
+    # file names of the graph and weights within the archive
   graph_checksum: fdb525acaa8d3db0f87c5577901f53ee
   weights_checksum: 29eb495b11613825c1900382f5286963
 attributes: # extra network attributes
