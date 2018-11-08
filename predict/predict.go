@@ -313,7 +313,10 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 
 // ReadPredictedFeatures ...
 func (p *ImagePredictor) ReadPredictedFeatures(ctx context.Context) ([]dlframework.Features, error) {
-	predictions := p.predictor.ReadPredictedFeatures(ctx)
+	predictions, err := p.predictor.ReadPredictedFeatures(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	var output []dlframework.Features
 	batchSize := int(p.BatchSize())
