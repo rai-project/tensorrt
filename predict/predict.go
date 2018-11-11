@@ -70,9 +70,9 @@ func (p *ImagePredictor) Download(ctx context.Context, model dlframework.ModelMa
 			Base: common.Base{
 				Framework: framework,
 				Model:     model,
+				WorkDir:   workDir,
 				Options:   options.New(opts...),
 			},
-			WorkDir: workDir,
 		},
 	}
 
@@ -101,9 +101,9 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 			Base: common.Base{
 				Framework: framework,
 				Model:     model,
+				WorkDir:   workDir,
 				Options:   options.New(opts...),
 			},
-			WorkDir: workDir,
 		},
 	}
 
