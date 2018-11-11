@@ -162,7 +162,7 @@ func (p *ImagePredictor) GetPreprocessOptions(ctx context.Context) (common.Prepr
 func (p *ImagePredictor) download(ctx context.Context) error {
 	span, ctx := tracer.StartSpanFromContext(ctx,
 		tracer.APPLICATION_TRACE,
-		"Download",
+		"download",
 		opentracing.Tags{
 			"graph_url":           p.GetGraphUrl(),
 			"target_graph_file":   p.GetGraphPath(),
@@ -314,11 +314,16 @@ func (p *ImagePredictor) Predict(ctx context.Context, data [][]float32, opts ...
 
 // ReadPredictedFeatures ...
 func (p *ImagePredictor) ReadPredictedFeatures(ctx context.Context) ([]dlframework.Features, error) {
-	predictions := p.predictor.ReadPredictedFeatures(ctx)
+	span, ctx := tracer.StartSpanFromContext(ctx, tracer.APPLICATION_TRACE, "read_predicted_features")
+	defer span.Finish()
+
+	predictions, err := p.predictor.ReadPredictions(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	batchSize := int(p.BatchSize())
 	length := len(predictions) / batchSize
-
 	output := make([]dlframework.Features, batchSize)
 
 	for ii := 0; ii < batchSize; ii++ {
