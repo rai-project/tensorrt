@@ -113,7 +113,7 @@ func (p *ImagePredictor) Load(ctx context.Context, model dlframework.ModelManife
 	}
 
 	ip.Options.Append(
-		options.InputNode(ip.GetInputLayerName(DefaultOutputLayerName), imageDims),
+		options.InputNode(ip.GetInputLayerName(DefaultInputLayerName), imageDims),
 		options.OutputNode(ip.GetOutputLayerName(DefaultOutputLayerName)),
 	)
 
