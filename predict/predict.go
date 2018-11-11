@@ -3,7 +3,6 @@ package predict
 import (
 	"bufio"
 	"os"
-	"sort"
 	"strings"
 
 	context "context"
@@ -14,7 +13,6 @@ import (
 	"github.com/rai-project/config"
 	"github.com/rai-project/dlframework"
 	"github.com/rai-project/dlframework/framework/agent"
-	"github.com/rai-project/dlframework/framework/feature"
 	"github.com/rai-project/dlframework/framework/options"
 	common "github.com/rai-project/dlframework/framework/predict"
 	"github.com/rai-project/downloadmanager"
@@ -29,7 +27,7 @@ import (
 // ImagePredictor ...
 type ImagePredictor struct {
 	common.ImagePredictor
-	features  []string
+	labels    []string
 	predictor *gotensorrt.Predictor
 }
 
@@ -234,7 +232,7 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 		olog.String("event", "read features"),
 	)
 
-	var features []string
+	var labels []string
 	f, err := os.Open(p.GetFeaturesPath())
 	if err != nil {
 		return errors.Wrapf(err, "cannot read %s", p.GetFeaturesPath())
@@ -243,9 +241,9 @@ func (p *ImagePredictor) loadPredictor(ctx context.Context) error {
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := scanner.Text()
-		features = append(features, line)
+		labels = append(labels, line)
 	}
-	p.features = features
+	p.labels = labels
 
 	span.LogFields(
 		olog.String("event", "creating predictor"),
@@ -318,29 +316,12 @@ func (p *ImagePredictor) ReadPredictedFeatures(ctx context.Context) ([]dlframewo
 	span, ctx := tracer.StartSpanFromContext(ctx, tracer.APPLICATION_TRACE, "read_predicted_features")
 	defer span.Finish()
 
-	output, err := p.predictor.ReadPredictionOutput(ctx)
+	output, err := p.predictor.ReadPredictionProbabilites(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	batchSize := int(p.BatchSize())
-	featureLen := len(output) / batchSize
-	features := make([]dlframework.Features, batchSize)
-
-	for ii := 0; ii < batchSize; ii++ {
-		rprobs := make([]*dlframework.Feature, featureLen)
-		for jj := 0; jj < featureLen; jj++ {
-			rprobs[jj] = feature.New(
-				feature.ClassificationIndex(int32(jj)),
-				feature.ClassificationName(p.features[jj]),
-				feature.Probability(output[ii*featureLen+jj]),
-			)
-		}
-		sort.Sort(dlframework.Features(rprobs))
-		features[ii] = rprobs
-	}
-
-	return features, nil
+	return p.CreatePredictedFeatures(ctx, output, p.labels)
 }
 
 // Reset ...
