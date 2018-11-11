@@ -3,6 +3,7 @@ package predict
 import (
 	"bufio"
 	"os"
+	"sort"
 	"strings"
 
 	context "context"
@@ -317,27 +318,29 @@ func (p *ImagePredictor) ReadPredictedFeatures(ctx context.Context) ([]dlframewo
 	span, ctx := tracer.StartSpanFromContext(ctx, tracer.APPLICATION_TRACE, "read_predicted_features")
 	defer span.Finish()
 
-	predictions, err := p.predictor.ReadPredictions(ctx)
+	output, err := p.predictor.ReadPredictionOutput(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	batchSize := int(p.BatchSize())
-	length := len(predictions) / batchSize
-	output := make([]dlframework.Features, batchSize)
+	featureLen := len(output) / batchSize
+	features := make([]dlframework.Features, batchSize)
 
 	for ii := 0; ii < batchSize; ii++ {
-		rprobs := make([]*dlframework.Feature, length)
-		for jj := 0; jj < length; jj++ {
+		rprobs := make([]*dlframework.Feature, featureLen)
+		for jj := 0; jj < featureLen; jj++ {
 			rprobs[jj] = feature.New(
 				feature.ClassificationIndex(int32(jj)),
 				feature.ClassificationName(p.features[jj]),
-				feature.Probability(predictions[ii*length+jj].Probability),
+				feature.Probability(output[ii*featureLen+jj]),
 			)
 		}
-		output[ii] = rprobs
+		sort.Sort(dlframework.Features(rprobs))
+		features[ii] = rprobs
 	}
-	return output, nil
+
+	return features, nil
 }
 
 // Reset ...
