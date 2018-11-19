@@ -54,8 +54,8 @@
   name = "github.com/rai-project/downloadmanager"
 
 [[constraint]]
-  revision = "947303b408247fb3aa4aea6568da56dc6b1e1aef"
   name = "github.com/rai-project/go-tensorrt"
+  version = "0.4.0"
 
 [[constraint]]
   branch = "master"

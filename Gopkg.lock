@@ -1224,11 +1224,12 @@
   revision = "a3eb81100bdb1b634dce526e43ea57aa80bf4f0d"
 
 [[projects]]
-  digest = "1:082988f6f9789b0e8b18c05dcd1c75e4365d78733712738108665755bff08c14"
+  digest = "1:7b81cdc0702d66433421f06d68b7076483c16d57e3bbb89b9a250208aa88d6db"
   name = "github.com/rai-project/go-tensorrt"
   packages = ["."]
   pruneopts = "T"
-  revision = "947303b408247fb3aa4aea6568da56dc6b1e1aef"
+  revision = "43a8709b1b7c6608cbaa6b4159a357814bb43f93"
+  version = "v0.4.0"
 
 [[projects]]
   branch = "master"
