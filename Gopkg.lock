@@ -1164,8 +1164,7 @@
   revision = "d6ee55e6087fd967d088465c96f656fe2f142cb8"
 
 [[projects]]
-  branch = "master"
-  digest = "1:7331e88cb0aec3de57ab86f1eb8b3e37e0f25f085747fec605db85707871ddcf"
+  digest = "1:15213174887bde500e5a11679bbda05282a5ad1d0dc65676bf5f165ff9d6830e"
   name = "github.com/rai-project/dlframework"
   packages = [
     ".",
@@ -1179,7 +1178,7 @@
     "steps",
   ]
   pruneopts = "T"
-  revision = "c362b2ef35629eca6433d43100d2aa7769f75d37"
+  revision = "c3e36d46e02760804a69fb48e96989d813d477fa"
 
 [[projects]]
   branch = "master"
@@ -1233,11 +1232,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ce05056658d0feefc6baa5cd1e6149cc69c43601a169b7806264373e42a62b6a"
+  digest = "1:6b406e95348ba537d1bb1f71ff168c3d4fd9d3ec361d59fa9d84e38b68dff596"
   name = "github.com/rai-project/go-tensorrt"
   packages = ["."]
   pruneopts = "T"
-  revision = "59c5697499b348b3ea5fbfbc0807518a35aa4452"
+  revision = "b5d0000ee6d7687f08a9caf7e8ed33bd05fedfde"
 
 [[projects]]
   branch = "master"
