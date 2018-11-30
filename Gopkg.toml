@@ -54,8 +54,8 @@
   name = "github.com/rai-project/downloadmanager"
 
 [[constraint]]
+	branch = "master"
   name = "github.com/rai-project/go-tensorrt"
-  version = "0.4.0"
 
 [[constraint]]
   branch = "master"
@@ -66,8 +66,8 @@
   name = "github.com/rai-project/logger"
 
 [[constraint]]
+	branch = "master"
   name = "github.com/rai-project/tracer"
-  version = "0.2.0"
 
 [[constraint]]
   name = "github.com/sirupsen/logrus"
@@ -80,6 +80,10 @@
 [[override]]
   branch = "master"
   name = "github.com/VividCortex/robustly"
+
+[[override]]
+  branch = "master"
+  name = "github.com/rai-project/go-libjpeg"
 
 [prune]
   go-tests = true

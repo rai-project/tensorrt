@@ -914,6 +914,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:ded79ae4dc43f8382f782459c8082f8910e5002fc04a492e98c7a72734ae0dc5"
+  name = "github.com/mitchellh/colorstring"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "8631ce90f28644f54aeedcb3e389a85174e067d1"
+
+[[projects]]
+  branch = "master"
   digest = "1:8eb17c2ec4df79193ae65b621cd1c0c4697db3bc317fe6afdc76d7f2746abd05"
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
@@ -1157,7 +1165,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4fdffc394e1f6c0a31ab6bc76aa7b3a03631b5ee498ca02f4bed46603601d0f7"
+  digest = "1:7331e88cb0aec3de57ab86f1eb8b3e37e0f25f085747fec605db85707871ddcf"
   name = "github.com/rai-project/dlframework"
   packages = [
     ".",
@@ -1171,7 +1179,7 @@
     "steps",
   ]
   pruneopts = "T"
-  revision = "8000b4200c0f169009212949103f9086664f817c"
+  revision = "c362b2ef35629eca6433d43100d2aa7769f75d37"
 
 [[projects]]
   branch = "master"
@@ -1194,7 +1202,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:97ab4a991c14e6a97cd099cb6c0fe7e7f5d1c28ac6420a0d51a1913cec25408c"
+  digest = "1:73acfb91fbd11e05745c088b5bc3892988185e85359cbd485c4f459c37a9f2b3"
   name = "github.com/rai-project/evaluation"
   packages = [
     ".",
@@ -1202,34 +1210,34 @@
     "eventflow",
   ]
   pruneopts = "T"
-  revision = "192cbc55d455b2194f76f745ceca53aa0b6ba62f"
+  revision = "3a994d2981acef5673117c76ad48c660051249d1"
 
 [[projects]]
   branch = "master"
-  digest = "1:d34027d99de469443b3e2ade46646b98a2acf3972ad7c8d9bf2b34ab2c4cdf61"
+  digest = "1:7b8be652a155d5968b86a03a8203b4bee6cb84582ac014fec489207e359a8310"
   name = "github.com/rai-project/go-cupti"
   packages = [
     ".",
     "types",
   ]
   pruneopts = "T"
-  revision = "fef5dd06e505b02990fc30e92491906553568d86"
+  revision = "ffa685874f19a86b0e6cbf9c8e1085d26987e999"
 
 [[projects]]
   branch = "master"
-  digest = "1:0899165efec9863fa9b2af016281dd313527382f0462e94f81e8ab2f26e0a33f"
+  digest = "1:c01cb1b607cc549f5ec8ea577d413b27d4fd3ab1721cdd6c41e099551e6e03c5"
   name = "github.com/rai-project/go-libjpeg"
   packages = ["."]
   pruneopts = "T"
-  revision = "a3eb81100bdb1b634dce526e43ea57aa80bf4f0d"
+  revision = "40fd7b1bcbeb6ac72279d3db52b3e0b6e38ea9df"
 
 [[projects]]
-  digest = "1:7b81cdc0702d66433421f06d68b7076483c16d57e3bbb89b9a250208aa88d6db"
+  branch = "master"
+  digest = "1:ce05056658d0feefc6baa5cd1e6149cc69c43601a169b7806264373e42a62b6a"
   name = "github.com/rai-project/go-tensorrt"
   packages = ["."]
   pruneopts = "T"
-  revision = "43a8709b1b7c6608cbaa6b4159a357814bb43f93"
-  version = "v0.4.0"
+  revision = "59c5697499b348b3ea5fbfbc0807518a35aa4452"
 
 [[projects]]
   branch = "master"
@@ -1249,15 +1257,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:375d71f91cb0adb4d0169390e51f4414582c3b538ff506e6ec0e8417592350c0"
+  digest = "1:be543f04f327fb7ed7cb4257a6f0c4e99386e1463ef86117c8305667822bf4b9"
   name = "github.com/rai-project/grpc"
   packages = ["."]
   pruneopts = "T"
-  revision = "bed6f8e760628d2725f5fbf21f52ecb4da448217"
+  revision = "de384a740c841f7533f018ae383bf8ff437d2765"
 
 [[projects]]
   branch = "master"
-  digest = "1:b0cfc0a0ed8e85f54818fa227536ac4c6c544f4817eb0f2fd58aa15f284f2ebf"
+  digest = "1:b5283e43fb524842a40a9db58af388e6cd35cc8c53c8146981bccba1fad4e26f"
   name = "github.com/rai-project/image"
   packages = [
     ".",
@@ -1265,7 +1273,7 @@
     "types",
   ]
   pruneopts = "T"
-  revision = "ac2b99ebb689aaf5beca7c005bb803c0dba19734"
+  revision = "2a6c79dddde871ec316483ace896a3cc0d18510b"
 
 [[projects]]
   branch = "master"
@@ -1408,7 +1416,8 @@
   revision = "e67904ef854ae00a55270b7bc2a3a2bd875ee080"
 
 [[projects]]
-  digest = "1:9d4471473703e5ebf8e8f77770c254d2c874c36203624f98e249e0b48decdcb7"
+  branch = "master"
+  digest = "1:13cb849b0572fea336b899783252cf9acf34df0f9d47386de68144c0432cc862"
   name = "github.com/rai-project/tracer"
   packages = [
     ".",
@@ -1423,8 +1432,7 @@
     "zipkin",
   ]
   pruneopts = "T"
-  revision = "99de7d4e81ce7fc75f5d12a31cddd5db8f233281"
-  version = "v0.2.0"
+  revision = "41b5c08e8b8efd04718204bf1ba6b83a15959e13"
 
 [[projects]]
   branch = "master"
@@ -1492,6 +1500,14 @@
   packages = ["zk"]
   pruneopts = "T"
   revision = "c4fab1ac1bec58281ad0667dc3f0907a9476ac47"
+
+[[projects]]
+  digest = "1:03030a9281583ff112559383faf7f9a5924647ca73fb1c8097d6332881eee50a"
+  name = "github.com/schollz/progressbar"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "74139f27599a71483b4fb521aac2e20db2a5f1c6"
+  version = "v2.7.1"
 
 [[projects]]
   branch = "master"
@@ -2030,11 +2046,55 @@
   version = "v1.13.0"
 
 [[projects]]
-  digest = "1:d8cd4f14785b5ae65100524a29ebba8b9dfc5401020fe7504f80b438bb8e8e0d"
-  name = "gopkg.in/cheggaaa/pb.v2"
+  digest = "1:15eb06ede732b6de69b8bfa51b29960b352934a602f3a6470c2b04cda9ca6ad4"
+  name = "gopkg.in/VividCortex/ewma.v1"
   packages = ["."]
   pruneopts = "T"
-  revision = "2af8bbdea9e99e83b3ac400d8f6b6d1b8cbbf338"
+  revision = "b24eb346a94c3ba12c1da1e564dbac1b498a77ce"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:495f9b42208e426f00d10b5bdaf4f7af2d0f56c20483136caca6ef5e2531e801"
+  name = "gopkg.in/cheggaaa/pb.v2"
+  packages = [
+    ".",
+    "termutil",
+  ]
+  pruneopts = "T"
+  revision = "c112833d014c77e8bde723fd0158e3156951639f"
+  version = "v2.0.6"
+
+[[projects]]
+  digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
+  name = "gopkg.in/fatih/color.v1"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
+  version = "v1.7.0"
+
+[[projects]]
+  digest = "1:b168836ecd85a2d138391dbc464d2442ea9400c29cc0636f2c6056b996692e29"
+  name = "gopkg.in/mattn/go-colorable.v0"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
+  version = "v0.0.9"
+
+[[projects]]
+  digest = "1:0981502f9816113c9c8c4ac301583841855c8cf4da8c72f696b3ebedf6d0e4e5"
+  name = "gopkg.in/mattn/go-isatty.v0"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
+  version = "v0.0.4"
+
+[[projects]]
+  digest = "1:cdb899c199f907ac9fb50495ec71212c95cb5b0e0a8ee0800da0238036091033"
+  name = "gopkg.in/mattn/go-runewidth.v0"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb"
+  version = "v0.0.3"
 
 [[projects]]
   branch = "v2"
