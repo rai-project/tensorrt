@@ -1233,11 +1233,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ce05056658d0feefc6baa5cd1e6149cc69c43601a169b7806264373e42a62b6a"
+  digest = "1:2cc74932eec837631bdef17d6de255b7ba06cc4d8c35163b5eae97315dd22e58"
   name = "github.com/rai-project/go-tensorrt"
   packages = ["."]
   pruneopts = "T"
-  revision = "59c5697499b348b3ea5fbfbc0807518a35aa4452"
+  revision = "93f5361f7c14f1a7c3a394e462a743c757490edd"
 
 [[projects]]
   branch = "master"
