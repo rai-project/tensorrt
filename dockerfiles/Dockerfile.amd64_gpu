@@ -23,7 +23,7 @@ ENV PKG github.com/rai-project/tensorrt
 WORKDIR $GOPATH/src/$PKG
 
 RUN git clone --depth=1 --branch=master https://${PKG}.git . && \
-  dep ensure -v && \
+  dep ensure -v -vendor-only && \
   go build -a -installsuffix cgo -ldflags "-s -w -X ${PKG}/Version=${VERSION} -X ${PKG}/GitCommit=${VCS_REF} -X ${PKG}/BuildDate=${BUILD_DATE}"&& \
   go install && \
   rm -fr vendor
