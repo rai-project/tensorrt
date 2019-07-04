@@ -7,6 +7,7 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG VCS_URL
 ARG VERSION
+ARG ARCH
 LABEL org.mlmodelscope.tensorrt.agent.build-date=$BUILD_DATE \
   org.mlmodelscope.tensorrt.agent.name="tensorrt agent" \
   org.mlmodelscope.tensorrt.agent.description="" \
@@ -19,7 +20,7 @@ LABEL org.mlmodelscope.tensorrt.agent.build-date=$BUILD_DATE \
 
 
 # Get Go bindings
-ENV PKG github.com/rai-project/tensorrt
+ENV PKG github.com/yhchang3/tensorrt
 WORKDIR $GOPATH/src/$PKG
 
 RUN git clone --depth=1 --branch=master https://${PKG}.git . && \

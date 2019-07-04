@@ -7,7 +7,7 @@ jobs:
           docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
           cd dockerfiles
           make docker_build_gpu
-          ./push_gpu.sh
+          while $(make docker_push_gpu); do :; done
   - job: GPU_NGC
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -27,7 +27,7 @@ jobs:
           docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
           cd tensorrt-agent/dockerfiles
           make docker_build_gpu
-          ./push_gpu.sh
+          while $(make docker_push_gpu); do :; done
   - job: GPU_NGC_Agent
     dependsOn:
       - GPU_NGC
