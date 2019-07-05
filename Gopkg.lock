@@ -53,14 +53,6 @@
   revision = "cd527374f1e5bff4938207604a14f2e38a9cf512"
 
 [[projects]]
-  branch = "master"
-  digest = "0:"
-  name = "github.com/SermoDigital/helpers"
-  packages = ["."]
-  pruneopts = "T"
-  revision = "8de2321850d4bf9f621014337ba3adc613c9cc25"
-
-[[projects]]
   digest = "1:beecb1a4d7c58eefef91ee32c9bc311dde58612af6dca3b626fd37b3bddc3706"
   name = "github.com/Shopify/sarama"
   packages = ["."]
@@ -1084,22 +1076,6 @@
 [[projects]]
   branch = "master"
   digest = "0:"
-  name = "github.com/mohae/joefriday"
-  packages = [
-    ".",
-    "cpu/cpuinfo",
-    "mem/membasic",
-    "net/netdev",
-    "net/structs",
-    "system/os",
-    "system/version",
-  ]
-  pruneopts = "T"
-  revision = "2d83fc975dd8b328ca863387d13963f8fd12f260"
-
-[[projects]]
-  branch = "master"
-  digest = "0:"
   name = "github.com/mohae/randchars"
   packages = ["."]
   pruneopts = "T"
@@ -1435,11 +1411,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:497b98580f3d529c197aff8c5cd75c92674b5af2cb6d0518cdc802fb03e009a0"
+  digest = "0:"
   name = "github.com/rai-project/go-tensorrt"
   packages = ["."]
   pruneopts = "T"
-  revision = "d7be4c3f8bea75361a40a27192ab41ce9a775575"
+  revision = "8fd3888655b05f8c03b89ad4852f71c1c879e280"
 
 [[projects]]
   branch = "master"
@@ -1476,6 +1452,23 @@
   ]
   pruneopts = "T"
   revision = "a6ebd1b24d2fcf25e9edaac659cd338eb539314a"
+
+[[projects]]
+  branch = "master"
+  digest = "0:"
+  name = "github.com/rai-project/joefriday"
+  packages = [
+    ".",
+    "cpu/cpuinfo",
+    "helpers",
+    "mem/membasic",
+    "net/netdev",
+    "net/structs",
+    "system/os",
+    "system/version",
+  ]
+  pruneopts = "T"
+  revision = "df36a95a62efcea0e7f5689746f9e3cff73b20af"
 
 [[projects]]
   branch = "master"
@@ -1534,7 +1527,7 @@
     "os",
   ]
   pruneopts = "T"
-  revision = "e20c9a49017c471cbd3cbcb38d88347c794bc83d"
+  revision = "16d40a8bc810dd4bda476f87f15607effddedb84"
 
 [[projects]]
   branch = "master"

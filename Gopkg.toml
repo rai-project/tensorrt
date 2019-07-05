@@ -85,6 +85,10 @@
   name = "github.com/k0kubun/pp"
   version = "3.0.1"
 
+[[override]]
+  name = "github.com/mohae/joefriday"
+  revision = "b07e8091cfb9214db8446b5101cb69edcfaabd30"
+
 [prune]
   go-tests = true
 

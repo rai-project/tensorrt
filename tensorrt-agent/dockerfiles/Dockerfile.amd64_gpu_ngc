@@ -49,7 +49,7 @@ RUN git clone --depth=1 --branch=master https://${PKG}.git . && \
 
 RUN go build -a -installsuffix cgo -ldflags "-s -w -X ${PKG}/Version=${VERSION} -X ${PKG}/GitCommit=${VCS_REF} -X ${PKG}/BuildDate=${BUILD_DATE}"&& \
     cd tensorrt-agent && \
-    go install && \
+    go install -tags="nolibjpeg" && \
     cd .. && \
     rm -fr vendor
 
