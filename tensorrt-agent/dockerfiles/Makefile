@@ -86,7 +86,7 @@ docker_push_gpu: # Tag image as latest and Push to DockerHub
 	docker push $(DOCKER_IMAGE):$(ARCH)-gpu-$(DOCKER_TAG)
 	docker push $(DOCKER_IMAGE):$(ARCH)-gpu-latest
 
-docker_push_gpu: # Tag image as latest and Push to DockerHub
+docker_push_gpu_ngc: # Tag image as latest and Push to DockerHub
 	docker tag $(DOCKER_IMAGE):$(ARCH)-gpu-ngc-$(DOCKER_TAG) $(DOCKER_IMAGE):$(ARCH)-gpu-ngc-latest
 	docker push $(DOCKER_IMAGE):$(ARCH)-gpu-ngc-$(DOCKER_TAG)
 	docker push $(DOCKER_IMAGE):$(ARCH)-gpu-ngc-latest
