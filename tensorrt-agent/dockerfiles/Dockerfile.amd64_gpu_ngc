@@ -41,7 +41,7 @@ ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
 RUN go get -u github.com/golang/dep/cmd/dep
 
 # Get Go bindings
-ENV PKG github.com/yhchang3/tensorrt
+ENV PKG github.com/rai-project/tensorrt
 WORKDIR $GOPATH/src/$PKG
 
 RUN git clone --depth=1 --branch=master https://${PKG}.git . && \
