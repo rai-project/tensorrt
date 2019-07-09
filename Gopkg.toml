@@ -30,10 +30,6 @@
   version = "1.0.0"
 
 [[constraint]]
-  name = "github.com/k0kubun/pp"
-  version = "2.3.0"
-
-[[constraint]]
   name = "github.com/opentracing/opentracing-go"
   version = "1.0.2"
 
@@ -84,6 +80,14 @@
 [[override]]
   branch = "master"
   name = "github.com/rai-project/go-libjpeg"
+
+[[override]]
+  name = "github.com/k0kubun/pp"
+  version = "3.0.1"
+
+[[override]]
+  name = "github.com/mohae/joefriday"
+  revision = "b07e8091cfb9214db8446b5101cb69edcfaabd30"
 
 [prune]
   go-tests = true

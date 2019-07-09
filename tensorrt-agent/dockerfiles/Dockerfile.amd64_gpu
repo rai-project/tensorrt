@@ -7,6 +7,7 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG VCS_URL
 ARG VERSION
+ARG ARCH
 LABEL org.tensorrt.agent.build-date=$BUILD_DATE \
   org.tensorrt.agent.name="tensorrt agent" \
   org.tensorrt.agent.description="" \
