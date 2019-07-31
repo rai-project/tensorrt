@@ -7,7 +7,7 @@ jobs:
           docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
           cd dockerfiles
           make docker_build_gpu
-          while $(make docker_push_gpu); do :; done
+          ./push.sh docker_push_gpu
   - job: GPU_NGC
     pool:
       vmImage: 'Ubuntu 16.04'
@@ -16,7 +16,7 @@ jobs:
           docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
           cd dockerfiles
           make docker_build_gpu_ngc
-          while $(make docker_push_gpu_ngc); do :; done
+          ./push.sh docker_push_gpu_ngc
   - job: GPU_Agent
     dependsOn:
       - GPU
@@ -27,7 +27,7 @@ jobs:
           docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
           cd tensorrt-agent/dockerfiles
           make docker_build_gpu
-          while $(make docker_push_gpu); do :; done
+          ./push.sh docker_push_gpu
   - job: GPU_NGC_Agent
     dependsOn:
       - GPU_NGC
@@ -38,16 +38,16 @@ jobs:
           docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
           cd tensorrt-agent/dockerfiles
           make docker_build_gpu_ngc
-          while $(make docker_push_gpu_ngc); do :; done
+          ./push.sh docker_push_gpu_ngc
   - job: Update_Microbadger
     dependsOn:
       - GPU
       - GPU_NGC
-    #steps:
-    # - script: "curl -X POST https://hooks.microbadger.com/images/carml/tensorrt/BmyRI58bz0gUqFsiFFvhh75QiII="
+    steps:
+     - script: "curl -X POST https://hooks.microbadger.com/images/carml/tensorrt/BmyRI58bz0gUqFsiFFvhh75QiII="
   - job: Update_Microbadger_Agent
     dependsOn:
       - GPU_Agent
       - GPU_NGC_Agent
-    #steps:
-    # - script: "curl -X POST https://hooks.microbadger.com/images/carml/tensorrt-agent/vnfn6OrzhZEARsQy6ltGO45Bfmw="
+    steps:
+     - script: "curl -X POST https://hooks.microbadger.com/images/carml/tensorrt-agent/vnfn6OrzhZEARsQy6ltGO45Bfmw="
