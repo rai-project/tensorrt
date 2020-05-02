@@ -1,7 +1,7 @@
 name: Inception-ResNet # name of your model
 framework:
   name: TensorRT # framework for the model
-  version: 5.0.0 # framework version contraint
+  version: 6.0.1 # framework version contraint
 version: 2.0 # version information in semantic version format
 container: # containers used to perform model prediction
            # multiple platforms can be specified
