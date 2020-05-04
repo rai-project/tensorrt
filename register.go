@@ -11,7 +11,7 @@ import (
 // FrameworkManifest ...
 var FrameworkManifest = dlframework.FrameworkManifest{
 	Name:    "TensorRT",
-	Version: "5.0.0",
+	Version: "6.0.1",
 	Container: map[string]*dlframework.ContainerHardware{
 		"amd64": {
 			Cpu: "raiproject/carml-tensorrt:amd64-cpu",
@@ -35,7 +35,8 @@ func assetFS() *assetfs.AssetFS {
 }
 
 func Register() {
-	if supportedSystem {
-		framework.Register(FrameworkManifest, assetFS())
+	err := framework.Register(FrameworkManifest, assetFS())
+	if err != nil {
+		log.WithError(err).Error("Failed to register server")
 	}
 }
