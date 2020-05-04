@@ -1,7 +1,7 @@
-name: ResNet50 # name of your model
+name: ResNet50_v1 # name of your model
 framework:
   name: TensorRT # framework for the model
-  version: 6.0.1 # framework version contraint
+  version: 7.0.0 # framework version contraint
 version: 1.0 # version information in semantic version format
 container: # containers used to perform model prediction
            # multiple platforms can be specified
@@ -23,29 +23,33 @@ references: # references to papers / websites / etc.. describing the model
 # license of the model
 license: unrestricted
 # inputs to the model
-inputs:
-  # first input type for the model
-  - type: image
-    # description of the first input
-    description: the input image
-    parameters: # type parameters
+inputs: # model inputs
+  - type: image # first input modality
+    description: the input image # description of the first input
+    parameters:
+      element_type: float32
+      input_layer: 'data'
+      layout: 'CHW'
+      color_mode: 'BGR'
       dimensions: [3, 224, 224]
       mean: [123.68, 116.779, 103.939]
 output:
   # the type of the output
-  type: feature
+  type: classification
   # a description of the output parameter
   description: the output label
-  parameters:
-    # type parameters
+  parameters: # type parameters
+    element_type: float32
+    probabilities_layer: 'prob'
     features_url: http://s3.amazonaws.com/store.carml.org/synsets/imagenet/synset.txt
     features_checksum: 4d234b5833aca44928065a180db3016a
 model: # specifies model graph and weights resources
   graph_path: http://s3.amazonaws.com/store.carml.org/models/caffe/resnet50/ResNet-50-deploy.prototxt
   weights_path: http://s3.amazonaws.com/store.carml.org/models/caffe/resnet50/ResNet-50-model.caffemodel
-  is_archive: false # if set, then the base_url is a url to an archive
-                    # the graph_path and weights_path then denote the
-                    # file names of the graph and weights within the archive
+  is_archive:
+    false # if set, then the base_url is a url to an archive
+    # the graph_path and weights_path then denote the
+    # file names of the graph and weights within the archive
   graph_checksum: 4ba3f945e7b86b07648e4f4351de0699
   weights_checksum: 44b20660c5948391734036963e855dd2
 attributes: # extra network attributes

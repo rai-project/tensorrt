@@ -3,7 +3,6 @@ package predictor
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -16,7 +15,6 @@ import (
 	"github.com/rai-project/mxnet"
 	nvidiasmi "github.com/rai-project/nvidia-smi"
 	"github.com/rai-project/tracer"
-	"gorgonia.org/tensor"
 	gotensor "gorgonia.org/tensor"
 )
 
@@ -26,7 +24,7 @@ type ImageClassificationPredictor struct {
 	probabilities interface{}
 }
 
-// NewImageClassificationPredictor initilizes the ImageClassificationPredictor.
+// NewImageClassificationPredictor initilizes the ImageClassificationPredictor
 func NewImageClassificationPredictor(model dlframework.ModelManifest, opts ...options.Option) (common.Predictor, error) {
 	ctx := context.Background()
 	span, ctx := tracer.StartSpanFromContext(ctx, tracer.APPLICATION_TRACE, "new_predictor")
@@ -46,22 +44,18 @@ func NewImageClassificationPredictor(model dlframework.ModelManifest, opts ...op
 	return predictor.Load(ctx, model, opts...)
 }
 
-// Load loads the context and actually initializes the predictor in go-tensorrt. This is different from other frameworks as the base level predictor is
-// initialized in the image_predictor level. It is because TensorRT requires the input and output nodes' names when constructing the go-tensorrt predictor.
 func (self *ImageClassificationPredictor) Load(ctx context.Context, modelManifest dlframework.ModelManifest, opts ...options.Option) (common.Predictor, error) {
 	pred, err := self.ImagePredictor.Load(ctx, modelManifest, opts...)
 	if err != nil {
 		return nil, err
 	}
 
-	// Move all the loading functions from the parent level to here due to the case that initializing TensorRT model
-	// requires the knowledge of input and output node info when initializing.
 	if ctx != nil {
 		span, _ := tracer.StartSpanFromContext(ctx, tracer.APPLICATION_TRACE, "load_predictor")
 		defer span.Finish()
 	}
 
-	predOptions, err := self.GetPredictionOptions()
+	predOptions, err := pred.GetPredictionOptions()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get the prediction options")
 	}
@@ -71,29 +65,19 @@ func (self *ImageClassificationPredictor) Load(ctx context.Context, modelManifes
 	}
 	device := options.CUDA_DEVICE
 
-	graph, err := ioutil.ReadFile(self.GetGraphPath())
-	if err != nil {
-		return nil, errors.Wrapf(err, "cannot read %s", self.GetGraphPath())
-	}
+	batchSize := pred.BatchSize()
 
-	weights, err := ioutil.ReadFile(self.GetWeightsPath())
-	if err != nil {
-		return nil, errors.Wrapf(err, "cannot read %s", self.GetWeightsPath())
-	}
-
-	batchSize := self.BatchSize()
-
-	inputName, err := self.GetInputLayerName("input_layer")
+	inputName, err := pred.GetInputLayerName("input_layer")
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get the input layer name")
 	}
 
-	inputShape, err := self.GetInputDimensions()
+	inputShape, err := pred.GetInputDimensions()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get the input dimensions")
 	}
 
-	outputName, err := self.GetOutputLayerName("probabilities_layer")
+	outputName, err := pred.GetOutputLayerName("probabilities_layer")
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get the output layer name")
 	}
@@ -103,19 +87,18 @@ func (self *ImageClassificationPredictor) Load(ctx context.Context, modelManifes
 	// 	return nil, errors.Wrap(err, "failed to get the input preprocess options")
 	// }
 
-	// Normal input and output nodes setup.
 	inputNodes := []options.Node{
 		options.Node{
 			Key:   inputName,
 			Shape: inputShape,
-			Dtype: tensor.Float32,
+			Dtype: gotensor.Float32,
 		},
 	}
 
 	outputNodes := []options.Node{
 		options.Node{
 			Key:   outputName,
-			Dtype: tensor.Float32,
+			Dtype: gotensor.Float32,
 		},
 	}
 
@@ -123,8 +106,8 @@ func (self *ImageClassificationPredictor) Load(ctx context.Context, modelManifes
 		ctx,
 		options.WithOptions(predOptions),
 		options.Device(device, 0),
-		options.Graph([]byte(graph)),
-		options.Weights([]byte(weights)),
+		options.Graph([]byte(pred.GetGraphPath())),
+		options.Weights([]byte(pred.GetWeightsPath())),
 		options.BatchSize(batchSize),
 		options.InputNodes(inputNodes),
 		options.OutputNodes(outputNodes),
@@ -132,7 +115,7 @@ func (self *ImageClassificationPredictor) Load(ctx context.Context, modelManifes
 	if err != nil {
 		panic(fmt.Sprintf("%v", err))
 	}
-	self.predictor = trtPredictor
+	pred.predictor = trtPredictor
 
 	p := &ImageClassificationPredictor{
 		ImagePredictor: pred,
@@ -182,7 +165,7 @@ func (p *ImageClassificationPredictor) ReadPredictedFeatures(ctx context.Context
 
 	labels, err := p.GetLabels()
 	if err != nil {
-		return nil, errors.New("cannot get the labels")
+		return nil, err
 	}
 
 	return p.CreateClassificationFeaturesFrom1D(ctx, outputs[0], labels)

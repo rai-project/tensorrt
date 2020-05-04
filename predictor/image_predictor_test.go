@@ -2,6 +2,7 @@ package predictor
 
 import (
 	"context"
+	"image"
 	"os"
 	"path/filepath"
 	"testing"
@@ -9,29 +10,41 @@ import (
 	"github.com/rai-project/dlframework/framework/options"
 	raiimage "github.com/rai-project/image"
 	"github.com/rai-project/image/types"
+	nvidiasmi "github.com/rai-project/nvidia-smi"
 	trt "github.com/rai-project/tensorrt"
 	"github.com/stretchr/testify/assert"
 	gotensor "gorgonia.org/tensor"
 )
 
-// convert go RGB Image to 1D normalized RGB array
-func cvtRGBImageToNCHW1DBGRArray(in types.Image, mean []float32, scale []float32) ([]float32, error) {
-	channels := in.Channels()
-	height := in.Bounds().Dy()
-	width := in.Bounds().Dx()
-	stride := width * height // image size per channel
-	pix := in.Pixels()
-	out := make([]float32, channels*height*width)
-
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			offset := y*stride + x*channels
-			rgb := pix[offset : offset+channels]
-			r, g, b := rgb[0], rgb[1], rgb[2]
-			out[0*stride+y*width+x] = (float32(b) - mean[0]) / scale[0]
-			out[1*stride+y*width+x] = (float32(g) - mean[1]) / scale[1]
-			out[2*stride+y*width+x] = (float32(r) - mean[2]) / scale[2]
+func normalizeImageCHW(in0 image.Image, mean []float32, scale []float32) ([]float32, error) {
+	height := in0.Bounds().Dy()
+	width := in0.Bounds().Dx()
+	out := make([]float32, 3*height*width)
+	switch in := in0.(type) {
+	case *types.RGBImage:
+		for y := 0; y < height; y++ {
+			for x := 0; x < width; x++ {
+				offset := y*in.Stride + x*3
+				rgb := in.Pix[offset : offset+3]
+				r, g, b := rgb[0], rgb[1], rgb[2]
+				out[0*width*height+y*width+x] = (float32(r) - mean[0]) / scale[0]
+				out[1*width*height+y*width+x] = (float32(g) - mean[1]) / scale[1]
+				out[2*width*height+y*width+x] = (float32(b) - mean[2]) / scale[2]
+			}
 		}
+	case *types.BGRImage:
+		for y := 0; y < height; y++ {
+			for x := 0; x < width; x++ {
+				offset := y*in.Stride + x*3
+				bgr := in.Pix[offset : offset+3]
+				b, g, r := bgr[0], bgr[1], bgr[2]
+				out[0*width*height+y*width+x] = (float32(b) - mean[0]) / scale[0]
+				out[1*width*height+y*width+x] = (float32(g) - mean[1]) / scale[1]
+				out[2*width*height+y*width+x] = (float32(r) - mean[2]) / scale[2]
+			}
+		}
+	default:
+		panic("unreachable")
 	}
 
 	return out, nil
@@ -39,7 +52,7 @@ func cvtRGBImageToNCHW1DBGRArray(in types.Image, mean []float32, scale []float32
 
 func TestNewImageClassificationPredictor(t *testing.T) {
 	trt.Register()
-	model, err := trt.FrameworkManifest.FindModel("BVLC-GoogLeNet:1.0")
+	model, err := trt.FrameworkManifest.FindModel("ResNet50_v1:1.0")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, model)
 
@@ -57,11 +70,14 @@ func TestNewImageClassificationPredictor(t *testing.T) {
 
 func TestImageClassification(t *testing.T) {
 	trt.Register()
-	model, err := trt.FrameworkManifest.FindModel("BVLC-GoogLeNet:1.0")
+	model, err := trt.FrameworkManifest.FindModel("ResNet50_v1:1.0")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, model)
 
-	device := options.CUDA_DEVICE
+	device := options.CPU_DEVICE
+	if nvidiasmi.HasGPU {
+		device = options.CUDA_DEVICE
+	}
 
 	batchSize := 1
 	ctx := context.Background()
@@ -73,6 +89,13 @@ func TestImageClassification(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEmpty(t, predictor)
 	defer predictor.Close()
+
+	imgDir, _ := filepath.Abs("./_fixtures")
+	imgPath := filepath.Join(imgDir, "platypus.jpg")
+	r, err := os.Open(imgPath)
+	if err != nil {
+		panic(err)
+	}
 
 	preprocessOpts, err := predictor.GetPreprocessOptions()
 	assert.NoError(t, err)
@@ -88,11 +111,10 @@ func TestImageClassification(t *testing.T) {
 		raiimage.ResizeAlgorithm(types.ResizeAlgorithmLinear),
 	}
 
-	imgDir, _ := filepath.Abs("./_fixtures")
-	imgPath := filepath.Join(imgDir, "platypus.jpg")
-	r, err := os.Open(imgPath)
-	if err != nil {
-		panic(err)
+	if mode == types.RGBMode {
+		imgOpts = append(imgOpts, raiimage.Mode(types.RGBMode))
+	} else {
+		imgOpts = append(imgOpts, raiimage.Mode(types.BGRMode))
 	}
 
 	img, err := raiimage.Read(r, imgOpts...)
@@ -100,8 +122,12 @@ func TestImageClassification(t *testing.T) {
 		panic(err)
 	}
 
+	imgOpts = append(imgOpts, raiimage.Resized(height, width))
+	imgOpts = append(imgOpts, raiimage.ResizeAlgorithm(types.ResizeAlgorithmLinear))
+	resized, err := raiimage.Resize(img, imgOpts...)
+
 	input := make([]*gotensor.Dense, batchSize)
-	imgFloats, err := cvtRGBImageToNCHW1DBGRArray(img, preprocessOpts.MeanImage, preprocessOpts.Scale)
+	imgFloats, err := normalizeImageCHW(resized, preprocessOpts.MeanImage, preprocessOpts.Scale)
 	if err != nil {
 		panic(err)
 	}
@@ -124,7 +150,7 @@ func TestImageClassification(t *testing.T) {
 	if err != nil {
 		return
 	}
-	assert.InDelta(t, float32(0.967381), pred[0][0].GetProbability(), 0.001)
+	assert.InDelta(t, float32(0.99999), pred[0][0].GetProbability(), 0.001)
 	assert.Equal(t, int32(103), pred[0][0].GetClassification().GetIndex())
 }
 
