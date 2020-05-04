@@ -12,8 +12,8 @@ import (
 	"github.com/rai-project/dlframework/framework/options"
 	common "github.com/rai-project/dlframework/framework/predictor"
 	gotrt "github.com/rai-project/go-tensorrt"
-	"github.com/rai-project/mxnet"
 	nvidiasmi "github.com/rai-project/nvidia-smi"
+	"github.com/rai-project/tensorrt"
 	"github.com/rai-project/tracer"
 	gotensor "gorgonia.org/tensor"
 )
@@ -178,7 +178,7 @@ func (p ImageClassificationPredictor) Modality() (dlframework.Modality, error) {
 
 func init() {
 	config.AfterInit(func() {
-		framework := mxnet.FrameworkManifest
+		framework := tensorrt.FrameworkManifest
 		agent.AddPredictor(framework, &ImageClassificationPredictor{
 			ImagePredictor: &ImagePredictor{
 				ImagePredictor: common.ImagePredictor{
